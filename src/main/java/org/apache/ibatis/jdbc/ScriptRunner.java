@@ -32,7 +32,7 @@ import java.util.regex.Pattern;
  * You are welcome to use this class for your own purposes,<br>
  * but if there is some feature/enhancement you need for your own usage,<br>
  * please make and modify your own copy instead of sending us an enhancement request.<br>
- * 
+ *
  * @author Clinton Begin
  */
 public class ScriptRunner {
@@ -45,9 +45,14 @@ public class ScriptRunner {
 
   private final Connection connection;
 
+  // sql异常是否终止程序执行
   private boolean stopOnError;
   private boolean throwWarning;
   private boolean autoCommit;
+  /**
+   * true: 批量执行
+   * false：逐条执行，多个sql使用分号分隔
+   */
   private boolean sendFullScript;
   private boolean removeCRs;
   private boolean escapeProcessing = true;
@@ -109,13 +114,21 @@ public class ScriptRunner {
     this.fullLineDelimiter = fullLineDelimiter;
   }
 
+  /**
+   * TODO: 整个sql的执行在同一个事务中
+   * @author sunliaodong
+   * @param reader
+   * @return void
+   * @throws
+   * @date 2020/6/20 9:41
+   */
   public void runScript(Reader reader) {
     setAutoCommit();
 
     try {
-      if (sendFullScript) {
+      if (sendFullScript) {// 一次性执行
         executeFullScript(reader);
-      } else {
+      } else {// 逐条执行
         executeLineByLine(reader);
       }
     } finally {

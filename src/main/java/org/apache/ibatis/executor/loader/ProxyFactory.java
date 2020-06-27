@@ -23,6 +23,13 @@ import org.apache.ibatis.session.Configuration;
 
 /**
  * @author Eduardo Macarron
+ * ProxyFactory是MyBatis中的代理工厂，主要用于创建动态代理对象，
+ * ProxyFactory接口有两个不同的实现，分别为CglibProxyFactory和JavassistProxyFactory。
+ *
+ * ProxyFactory主要用于实现MyBatis的懒加载功能。
+ * 当开启懒加载后，MyBatis创建Mapper映射结果对象后，会通过ProxyFactory创建映射结果对象的代理对象。
+ * 当我们调用代理对象的Getter方法获取数据时，
+ * 会执行CglibProxyFactory或JavassistProxyFactory中定义的拦截逻辑，然后执行一次额外的查询
  */
 public interface ProxyFactory {
 

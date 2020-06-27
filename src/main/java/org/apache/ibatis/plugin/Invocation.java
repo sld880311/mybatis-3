@@ -23,8 +23,15 @@ import java.lang.reflect.Method;
  */
 public class Invocation {
 
+//  目标对象
+//  executor
+//  parameterHandler
+//  resultsethandler
+//  statementhandler
   private final Object target;
+//  目标方法，被拦截处理的方法
   private final Method method;
+//  目标方法参数
   private final Object[] args;
 
   public Invocation(Object target, Method method, Object[] args) {
@@ -45,6 +52,14 @@ public class Invocation {
     return args;
   }
 
+  /**
+   * TODO: 执行目标方法
+   * @author sunliaodong
+   * @return java.lang.Object 目标方法执行结果
+   * @throws InvocationTargetException 抛出异常
+   * @throws IllegalAccessException 抛出异常
+   * @date 2020/6/26 16:30
+   */
   public Object proceed() throws InvocationTargetException, IllegalAccessException {
     return method.invoke(target, args);
   }

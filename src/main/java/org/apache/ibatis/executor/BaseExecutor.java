@@ -55,7 +55,9 @@ public abstract class BaseExecutor implements Executor {
   protected Executor wrapper;
 
   protected ConcurrentLinkedQueue<DeferredLoad> deferredLoads;
+//  一级缓存（存储查询结果）
   protected PerpetualCache localCache;
+//  存储过程输出参数缓存（存储过程调用结果）
   protected PerpetualCache localOutputParameterCache;
   protected Configuration configuration;
 
@@ -131,7 +133,9 @@ public abstract class BaseExecutor implements Executor {
 
   @Override
   public <E> List<E> query(MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler) throws SQLException {
+//    获取boundsql对象：动态sql解析生成的sql语句和参数映射的封装
     BoundSql boundSql = ms.getBoundSql(parameter);
+//    创建cachekey，用于缓存key
     CacheKey key = createCacheKey(ms, parameter, rowBounds, boundSql);
     return query(ms, parameter, rowBounds, resultHandler, key, boundSql);
   }
@@ -149,6 +153,7 @@ public abstract class BaseExecutor implements Executor {
     List<E> list;
     try {
       queryStack++;
+//      通过缓存获取结果数据（一级缓存中如果不存在则从数据库获取数据）
       list = resultHandler == null ? (List<E>) localCache.getObject(key) : null;
       if (list != null) {
         handleLocallyCachedOutputParameters(ms, key, parameter, boundSql);

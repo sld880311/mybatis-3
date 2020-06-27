@@ -35,6 +35,10 @@ import org.apache.ibatis.reflection.Reflector;
 
 /**
  * @author Clinton Begin
+ * ObjectFactory是MyBatis中的对象工厂，
+ * MyBatis每次创建Mapper映射结果对象的新实例时，都会使用一个对象工厂（ObjectFactory）实例来完成
+ * 默认的对象工厂需要做的仅仅是实例化目标类，
+ * 要么通过默认构造方法，要么在参数映射存在的时候通过参数构造方法来实例化
  */
 public class DefaultObjectFactory implements ObjectFactory, Serializable {
 
@@ -89,6 +93,14 @@ public class DefaultObjectFactory implements ObjectFactory, Serializable {
     }
   }
 
+  /**
+   * TODO: 集合对应初始化的实例对象
+   * @author sunliaodong
+   * @param type
+   * @return java.lang.Class<?>
+   * @throws
+   * @date 2020/6/20 10:35
+   */
   protected Class<?> resolveInterface(Class<?> type) {
     Class<?> classToCreate;
     if (type == List.class || type == Collection.class || type == Iterable.class) {

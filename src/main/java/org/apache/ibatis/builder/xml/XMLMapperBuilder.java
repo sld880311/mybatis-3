@@ -97,8 +97,11 @@ public class XMLMapperBuilder extends BaseBuilder {
       bindMapperForNamespace();
     }
 
+//    解析resultmap
     parsePendingResultMaps();
+//    解析cacheref
     parsePendingCacheRefs();
+//    解析sql，select、update、delete、insert
     parsePendingStatements();
   }
 

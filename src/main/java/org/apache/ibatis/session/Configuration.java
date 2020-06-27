@@ -101,14 +101,21 @@ import org.apache.ibatis.type.TypeHandlerRegistry;
 public class Configuration {
 
   protected Environment environment;
-
+//  是否允许嵌套分页
   protected boolean safeRowBoundsEnabled;
+//  是否允许嵌套分页
   protected boolean safeResultHandlerEnabled = true;
+//  驼峰命名映射
   protected boolean mapUnderscoreToCamelCase;
+//  所有方法的调用是否需要加载对象的所有属性，还是按需加载
   protected boolean aggressiveLazyLoading;
+//  是否允许单一语句返回多个结果集
   protected boolean multipleResultSetsEnabled = true;
+//  是否自动生成主键
   protected boolean useGeneratedKeys;
+//  使用列标签替换列明
   protected boolean useColumnLabel = true;
+//  是否开启mapper的二级缓存
   protected boolean cacheEnabled = true;
   protected boolean callSettersOnNulls;
   protected boolean useActualParamName = true;
@@ -118,14 +125,34 @@ public class Configuration {
   protected String logPrefix;
   protected Class<? extends Log> logImpl;
   protected Class<? extends VFS> vfsImpl;
+//  mybatis使用本地缓存的方式防止循环应用，提高查询效率
+//  SESSION：缓存一次会话中的所有查询
+//  STATEMENT：仅用在语句上执行，对相同sqlsession中的不同调用则不会共享数据
   protected LocalCacheScope localCacheScope = LocalCacheScope.SESSION;
+//  没有为参数设置jdbc类型时，设置为JdbcType.OTHER
   protected JdbcType jdbcTypeForNull = JdbcType.OTHER;
+//  指定需要触发懒加载的方法
   protected Set<String> lazyLoadTriggerMethods = new HashSet<>(Arrays.asList("equals", "clone", "hashCode", "toString"));
+//  驱动等待sql执行的超时时间
   protected Integer defaultStatementTimeout;
+//  限制从数据库获取数据的最大行数
   protected Integer defaultFetchSize;
+
   protected ResultSetType defaultResultSetType;
+//  executor默认执行类型
+//  SIMPLE：普通的executor
+//  REUSE：复用statement
+//  BATCH：批量执行所有更新语句
   protected ExecutorType defaultExecutorType = ExecutorType.SIMPLE;
+//  mybatis映射列到java属性的方式
+//  NONE：取消自动映射
+//  PARTIAL：自动映射没有嵌套结果集映射的结果集
+//  FULL：自动映射所有的结果集，包括复杂的嵌套关系
   protected AutoMappingBehavior autoMappingBehavior = AutoMappingBehavior.PARTIAL;
+//  自动映射目标列不存在的处理方式
+//  NONE：不做任何反应
+//  WARNING：输出告警日志
+//  FAILING：映射失败，抛出SqlSessionException
   protected AutoMappingUnknownColumnBehavior autoMappingUnknownColumnBehavior = AutoMappingUnknownColumnBehavior.NONE;
 
   protected Properties variables = new Properties();
@@ -133,6 +160,7 @@ public class Configuration {
   protected ObjectFactory objectFactory = new DefaultObjectFactory();
   protected ObjectWrapperFactory objectWrapperFactory = new DefaultObjectWrapperFactory();
 
+//  开启：所有关联对象延迟加载，可以通过fetchType覆盖该属性
   protected boolean lazyLoadingEnabled = false;
   protected ProxyFactory proxyFactory = new JavassistProxyFactory(); // #224 Using internal Javassist instead of OGNL
 
@@ -145,12 +173,17 @@ public class Configuration {
    */
   protected Class<?> configurationFactory;
 
+//  完成MapperProxyFactory的初始化，
+//  mapper接口用于定义sql语句相关的方法，一般对应于mapper xml中的命名空间，比如UserMapper.class
   protected final MapperRegistry mapperRegistry = new MapperRegistry(this);
   protected final InterceptorChain interceptorChain = new InterceptorChain();
   protected final TypeHandlerRegistry typeHandlerRegistry = new TypeHandlerRegistry(this);
   protected final TypeAliasRegistry typeAliasRegistry = new TypeAliasRegistry();
   protected final LanguageDriverRegistry languageRegistry = new LanguageDriverRegistry();
 
+//  Key为Mapper SQL配置的Id
+//  SQL是通过XML配置的，则Id为命名空间加上<select|update|delete|insert>标签的Id，
+//  SQL通过Java注解配置，则Id为Mapper接口的完全限定名（包括包名）加上方法名称
   protected final Map<String, MappedStatement> mappedStatements = new StrictMap<MappedStatement>("Mapped Statements collection")
       .conflictMessageProducer((savedValue, targetValue) ->
           ". please check " + savedValue.getResource() + " and " + targetValue.getResource());
